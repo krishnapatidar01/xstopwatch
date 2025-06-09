@@ -4,17 +4,18 @@ import "./App.css";
 function App() {
   const [seconds, setSeconds] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
-  const timerRef = useRef(null);
+  const intervalRef = useRef(null);
 
   useEffect(() => {
     if (isRunning) {
-      timerRef.current = setInterval(() => {
+      intervalRef.current = setInterval(() => {
         setSeconds((prev) => prev + 1);
       }, 1000);
     } else {
-      clearInterval(timerRef.current);
+      clearInterval(intervalRef.current);
     }
-    return () => clearInterval(timerRef.current);
+
+    return () => clearInterval(intervalRef.current);
   }, [isRunning]);
 
   const handleStartStop = () => {
@@ -26,17 +27,19 @@ function App() {
     setSeconds(0);
   };
 
-  const formatTime = (totalSeconds) => {
-    const mins = Math.floor(totalSeconds / 60);
-    const secs = totalSeconds % 60;
-    return `${mins}:${secs < 10 ? "0" : ""}${secs}`;
+  const formatTime = (secs) => {
+    const minutes = Math.floor(secs / 60);
+    const seconds = secs % 60;
+    return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
   };
 
   return (
     <div className="App">
       <h1>Stopwatch</h1>
-      <h2>Time</h2>
-      <h3>{formatTime(seconds)}</h3>
+      {/* This MUST be exactly 'Time: 0:00' in one element */}
+      <h2>Time: {formatTime(seconds)}</h2>
+
+      {/* Button labels MUST be "Start", "Stop", "Reset" */}
       <button onClick={handleStartStop}>
         {isRunning ? "Stop" : "Start"}
       </button>
